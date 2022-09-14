@@ -9,19 +9,19 @@ class MyGame extends Phaser.Scene {
     }
 
     preload() {
-        this.load.atlasXML('sprites', spritesTexture, spritesAtlas)
+        this.load.atlasXML('sprites', spritesTexture, spritesAtlas,)
     }
 
     create() {
-        const atlasTexture = this.textures.get('sprites')
+        const atlasTexture = this.textures.get('sprites',)
 
         const frames = atlasTexture.getFrameNames()
 
         for (let i = 0; i < frames.length; i++) {
-            const x = Phaser.Math.Between(0, 800)
-            const y = Phaser.Math.Between(0, 600)
+            const x = Phaser.Math.Between(0, 800,)
+            const y = Phaser.Math.Between(0, 600,)
 
-            const sprite = this.add.image(x, y, 'sprites', frames[i])
+            const sprite = this.add.image(x, y, 'sprites', frames[i],)
             sprite.scale = 0.3
         }
     }
@@ -32,7 +32,7 @@ const config = {
     width: 800,
     height: 600,
     parent: 'tank-game',
-    scene: MyGame
+    scene: MyGame,
 }
 
-const game = new Phaser.Game(config)
+const game = new Phaser.Game(config,)

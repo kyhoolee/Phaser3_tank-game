@@ -54,6 +54,10 @@
       "semi": [
         "warn",
         "never"
+      ],
+      "comma-dangle": [
+        "warn",
+        "always"
       ]
     }
   }
