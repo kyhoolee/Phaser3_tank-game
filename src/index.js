@@ -30,11 +30,8 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    parent: 'phaser-example',
-    scene: {
-        preload: preload,
-        create: create
-    }
+    parent: 'tank-game',
+    scene: MyGame
 };
 
 const game = new Phaser.Game(config);
