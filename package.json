@@ -25,6 +25,8 @@
     "clean-webpack-plugin": "^3.0.0",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "prettier-eslint": "^15.0.1",
+    "eslint": "8.22.0",
     "raw-loader": "^3.1.0",
     "terser-webpack-plugin": "^2.2.1",
     "webpack": "^4.41.2",
@@ -34,5 +36,25 @@
   },
   "dependencies": {
     "phaser": "^3.50.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "rules": {
+      "no-console": "off",
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "semi": [
+        "warn",
+        "never"
+      ]
+    }
   }
 }
