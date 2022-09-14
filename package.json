@@ -57,7 +57,7 @@
       ],
       "comma-dangle": [
         "warn",
-        "always"
+        "always-multiline"
       ]
     }
   }
