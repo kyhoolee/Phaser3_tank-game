@@ -58,6 +58,11 @@
       "comma-dangle": [
         "warn",
         "always-multiline"
+      ],
+      "no-var": "warn",
+      "quotes": [
+        "warn",
+        "single"
       ]
     }
   }
