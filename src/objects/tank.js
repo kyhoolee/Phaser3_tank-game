@@ -1,8 +1,9 @@
+import Shell from './shell'
+
 export class TankBody extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'sprites', 'tankBody_blue.png')
         this.setOrigin(0.5, 0.5)
-        this.setScale(0.25)
     }
 }
 
@@ -10,7 +11,6 @@ export class TankTurret extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'sprites', 'tankBlue_barrel1.png')
         this.setOrigin(0.5, 0)
-        this.setScale(0.25)
     }
 }
 
@@ -24,10 +24,43 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.tankTurret = new TankTurret(scene, 0, 0)
         this.add(this.tankTurret)
 
-        this.setSize(this.tankBody.displayWidth, this.tankBody.displayHeight)
+        this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 20)
+
+        this.movementKeys = scene.input.keyboard.createCursorKeys()
+        let fireKey = scene.input.keyboard.addKey('space')
+        fireKey.on('down', (event) => {
+            const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.height).rotate(Phaser.Math.PI2 / 4)
+            let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
+            this.scene.add.existing(shell)
+        })
 
         scene.matter.add.gameObject(this)
+        console.log(this)
+        this.body.frictionAir = 1
+        this.body.mass = 10
+        this.body.friction = 100000
 
         scene.add.existing(this)
+    }
+
+    preUpdate(time, delta) {
+        let throttle = 0
+        let throttleRate = 0.05
+        if (this.movementKeys.up.isDown) {
+            throttle += throttleRate
+        }
+        if (this.movementKeys.down.isDown) {
+            throttle -= throttleRate
+        }
+        this.thrustRight(throttle)
+        let turn = 0
+        let turnRate = 0.8
+        if (this.movementKeys.left.isDown) {
+            turn -= turnRate
+        }
+        if (this.movementKeys.right.isDown) {
+            turn += turnRate
+        }
+        this.body.torque = turn
     }
 }

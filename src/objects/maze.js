@@ -5,17 +5,21 @@ export class Wall extends Phaser.Physics.Matter.Image {
     constructor(scene, x1, y1, x2, y2) {
         super(scene.matter.world, x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5, 'sprites', Phaser.Math.RND.pick(['fenceYellow.png', 'fenceRed.png']), {
                 isStatic: true,
-                angle: Phaser.Math.Angle.Between(x1, y1, x2, y2),
             },
         )
         this.setScale(Phaser.Math.Distance.Between(x1, y1, x2, y2) / this.width)
+        this.setScale(this.scaleX, this.scaleY * 0.5)
+        this.setRotation(Phaser.Math.Angle.Between(x1, y1, x2, y2))
+        this.body.friction = 0
     }
 }
 
-export class Pillar extends Phaser.GameObjects.Sprite {
+export class Pillar extends Phaser.Physics.Matter.Image {
     constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'crateMetal.png')
-        this.scale = 0.2
+        super(scene.matter.world, x, y, 'sprites', 'crateMetal.png', {
+            isStatic: true,
+        })
+        this.setScale(0.2)
     }
 
     preUpdate(time, delta) {

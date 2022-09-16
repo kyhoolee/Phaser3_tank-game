@@ -19,7 +19,7 @@ class TankGame extends Phaser.Scene {
         const atlasTexture = this.textures.get('sprites')
         const sprites = atlasTexture.getFrameNames()
 
-        this.maze = new Maze(this, 10, 10, 50, 50)
+        this.maze = new Maze(this, 16, 12, 200, 200)
 
         this.tank = new Tank(this, 25, 25)
     }
@@ -33,7 +33,7 @@ const config = {
         default: 'matter',
         matter: {
             fps: 60,
-            gravity: {y: 100},
+            gravity: {y: 0},
             debug: true,
         },
     },
