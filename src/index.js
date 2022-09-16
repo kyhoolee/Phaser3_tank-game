@@ -22,13 +22,16 @@ class TankGame extends Phaser.Scene {
         this.maze = new Maze(this, 16, 12, 200, 200)
 
         this.tank = new Tank(this, 25, 25)
+
+        this.cameras.main.zoom = 0.5
+        this.cameras.main.setBackgroundColor('#9393bf')
     }
 }
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1400,
+    height: 700,
     physics: {
         default: 'matter',
         matter: {

@@ -32,13 +32,13 @@ export default class Tank extends Phaser.GameObjects.Container {
             const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.height).rotate(Phaser.Math.PI2 / 4)
             let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
             this.scene.add.existing(shell)
+            this.thrustLeft(3)
         })
 
         scene.matter.add.gameObject(this)
-        console.log(this)
-        this.body.frictionAir = 1
-        this.body.mass = 10
-        this.body.friction = 100000
+        this.body.frictionAir = 0.1
+        this.body.mass = 100
+        this.body.friction = 1
 
         scene.add.existing(this)
     }
@@ -54,7 +54,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         }
         this.thrustRight(throttle)
         let turn = 0
-        let turnRate = 0.8
+        let turnRate = 0.1
         if (this.movementKeys.left.isDown) {
             turn -= turnRate
         }
