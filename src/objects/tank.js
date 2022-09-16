@@ -14,6 +14,17 @@ export class TankTurret extends Phaser.GameObjects.Sprite {
     }
 }
 
+export class MuzzleFlash extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y) {
+        super(scene, x, y, 'sprites', 'shotLarge.png')
+        this.setOrigin(0.5, 0)
+        scene.time.addEvent({
+            delay: 75,
+            callback: () => this.destroy(),
+        })
+    }
+}
+
 export default class Tank extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
         super(scene, x, y)
@@ -32,6 +43,8 @@ export default class Tank extends Phaser.GameObjects.Container {
             const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.height).rotate(Phaser.Math.PI2 / 4)
             let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
             this.scene.add.existing(shell)
+            let flash = new MuzzleFlash(scene, 0, this.tankTurret.height)
+            this.add(flash)
             this.thrustLeft(3)
         })
 
