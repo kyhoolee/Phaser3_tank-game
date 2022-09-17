@@ -29,7 +29,6 @@ export class TankTurret extends Phaser.GameObjects.Container {
             this.knockback = Math.max(0, this.knockback - delta * 0.03)
         }
         this.y = -this.knockback
-        console.log(this.knockback)
     }
 }
 
@@ -54,7 +53,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.tankTurret = new TankTurret(scene, 0, 0)
         this.add(this.tankTurret)
 
-        this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 20)
+        this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 12)
 
         this.movementKeys = scene.input.keyboard.createCursorKeys()
         let fireKey = scene.input.keyboard.addKey('space')

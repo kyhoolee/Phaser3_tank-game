@@ -6,8 +6,8 @@ import Maze from './objects/maze'
 import Tank from './objects/tank'
 
 class TankGame extends Phaser.Scene {
-    constructor() {
-        super()
+    constructor(config) {
+        super(config)
     }
 
     preload() {
@@ -21,10 +21,14 @@ class TankGame extends Phaser.Scene {
 
         this.maze = new Maze(this, 16, 12, 200, 200)
 
-        this.tank = new Tank(this, 25, 25)
+        this.tank = new Tank(this, 100, 100)
 
         this.cameras.main.zoom = 0.5
         this.cameras.main.setBackgroundColor('#9393bf')
+
+        this.input.keyboard.addKey('r').on('down', () => {
+            this.scene.restart()
+        })
     }
 }
 
