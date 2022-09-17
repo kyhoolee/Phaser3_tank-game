@@ -7,10 +7,29 @@ export class TankBody extends Phaser.GameObjects.Sprite {
     }
 }
 
-export class TankTurret extends Phaser.GameObjects.Sprite {
+export class TankTurret extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'tankBlue_barrel1.png')
-        this.setOrigin(0.5, 0)
+        super(scene, x, y)
+        this.barrel = scene.add.sprite(0, 0, 'sprites', 'tankBlue_barrel1.png')
+        this.barrel.setOrigin(0.5, 0)
+        this.add(this.barrel)
+        this.knockback = 0
+        scene.sys.updateList.add(this)
+    }
+
+    fire() {
+        this.knockback = 15
+        this.y = -this.knockback
+        let flash = new MuzzleFlash(this.scene, 0, this.barrel.height)
+        this.add(flash)
+    }
+
+    preUpdate(time, delta) {
+        if (this.knockback !== 0) {
+            this.knockback = Math.max(0, this.knockback - delta * 0.03)
+        }
+        this.y = -this.knockback
+        console.log(this.knockback)
     }
 }
 
@@ -40,11 +59,10 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.movementKeys = scene.input.keyboard.createCursorKeys()
         let fireKey = scene.input.keyboard.addKey('space')
         fireKey.on('down', (event) => {
-            const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.height).rotate(Phaser.Math.PI2 / 4)
+            const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.barrel.height).rotate(Phaser.Math.PI2 / 4)
             let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
             this.scene.add.existing(shell)
-            let flash = new MuzzleFlash(scene, 0, this.tankTurret.height)
-            this.add(flash)
+            this.tankTurret.fire()
             this.thrustLeft(3)
         })
 

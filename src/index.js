@@ -37,7 +37,15 @@ const config = {
         matter: {
             fps: 60,
             gravity: {y: 0},
-            debug: true,
+            debug: {
+                showBody: true,
+                showStaticBody: true,
+                showVelocity: true,
+                showCollisions: true,
+                showAxes: true,
+                showPositions: true,
+                showAngleIndicator: true,
+            },
         },
     },
     parent: 'tank-game',
