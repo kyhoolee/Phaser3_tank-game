@@ -2,7 +2,7 @@ import Shell from './shell'
 
 export class TankBody extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'tankBody_blue.png')
+        super(scene, x, y, 'sprites', 'tankBody_blue_outline.png')
         this.setOrigin(0.5, 0.5)
     }
 }
@@ -10,25 +10,20 @@ export class TankBody extends Phaser.GameObjects.Sprite {
 export class TankTurret extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
         super(scene, x, y)
-        this.barrel = scene.add.sprite(0, 0, 'sprites', 'tankBlue_barrel1.png')
+        this.barrel = scene.add.sprite(0, 0, 'sprites', 'tankBlue_barrel1_outline.png')
         this.barrel.setOrigin(0.5, 0)
         this.add(this.barrel)
-        this.knockback = 0
-        scene.sys.updateList.add(this)
     }
 
     fire() {
-        this.knockback = 15
-        this.y = -this.knockback
         let flash = new MuzzleFlash(this.scene, 0, this.barrel.height)
         this.add(flash)
-    }
-
-    preUpdate(time, delta) {
-        if (this.knockback !== 0) {
-            this.knockback = Math.max(0, this.knockback - delta * 0.03)
-        }
-        this.y = -this.knockback
+        this.scene.tweens.add({
+            targets: this,
+            y: {from: -20, to: 0},
+            ease: 'linear',
+            duration: 700,
+        })
     }
 }
 
@@ -52,6 +47,11 @@ export default class Tank extends Phaser.GameObjects.Container {
 
         this.tankTurret = new TankTurret(scene, 0, 0)
         this.add(this.tankTurret)
+
+        this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'tracks')
+        this.tracks.setVisible(false)
+        this.tracks.alpha = 0.02
+        this.add(this.tracks)
 
         this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 12)
 
@@ -92,5 +92,8 @@ export default class Tank extends Phaser.GameObjects.Container {
             turn += turnRate
         }
         this.body.torque = turn
+
+        this.tracks.angle = this.angle
+        this.scene.tracksRenderTexture.draw(this.tracks, this.x, this.y)
     }
 }

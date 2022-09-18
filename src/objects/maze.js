@@ -7,8 +7,9 @@ export class Wall extends Phaser.Physics.Matter.Image {
                 isStatic: true,
             },
         )
+        let width = 40
         this.setScale(Phaser.Math.Distance.Between(x1, y1, x2, y2) / this.width)
-        this.setScale(this.scaleX, this.scaleY * 0.5)
+        this.setScale(this.scaleX, width / this.height)
         this.setRotation(Phaser.Math.Angle.Between(x1, y1, x2, y2))
     }
 }
@@ -18,7 +19,8 @@ export class Pillar extends Phaser.Physics.Matter.Image {
         super(scene.matter.world, x, y, 'sprites', 'crateMetal.png', {
             isStatic: true,
         })
-        this.setScale(0.75)
+        let size = 40
+        this.setScale(size / this.width)
     }
 
     preUpdate(time, delta) {
