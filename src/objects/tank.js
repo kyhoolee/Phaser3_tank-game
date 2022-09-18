@@ -93,7 +93,9 @@ export default class Tank extends Phaser.GameObjects.Container {
         }
         this.body.torque = turn
 
-        this.tracks.angle = this.angle
-        this.scene.tracksRenderTexture.draw(this.tracks, this.x, this.y)
+        if (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01) {
+            this.tracks.angle = this.angle
+            this.scene.tracksRenderTexture.draw(this.tracks, this.x, this.y)
+        }
     }
 }

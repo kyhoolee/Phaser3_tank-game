@@ -37,7 +37,7 @@ class TankGame extends Phaser.Scene {
         const mazeSize = {x: 16, y: 12}
 
         this.tracksRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize, mazeSize.y * tileSize)
-        this.tracksRenderTexture.alpha = 0.4
+        this.tracksRenderTexture.alpha = 0.7
 
         this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize, tileSize)
 
