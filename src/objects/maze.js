@@ -56,7 +56,6 @@ export default class Maze extends Phaser.GameObjects.Container {
         this.removeWalls(this.width * this.height / 5)
         this.createWallObjects()
         this.createPillarObjects()
-        scene.add.existing(this)
     }
 
     getNeighbours(cell) {

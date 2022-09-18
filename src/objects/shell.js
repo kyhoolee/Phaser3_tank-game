@@ -27,7 +27,8 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                     this.lastCollision = data.timeCreated
                 } else {
                     if (this.scene) {
-                        this.scene.add.existing(new Explosion(this.scene, this.x, this.y))
+                        let explosion = new Explosion(this.scene, this.x, this.y)
+                        this.scene.add.existing(explosion)
                         this.destroy()
                     }
                 }

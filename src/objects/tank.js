@@ -42,6 +42,8 @@ export default class Tank extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
         super(scene, x, y)
 
+        this.trackFrame = 0
+
         this.tankBody = new TankBody(scene, 0, 0)
         this.add(this.tankBody)
 
@@ -51,6 +53,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'tracks')
         this.tracks.setVisible(false)
         this.tracks.alpha = 0.02
+        this.tracks.setScale(1 / scene.tracksRenderTexture.scale)
         this.add(this.tracks)
 
         this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 12)
@@ -62,15 +65,13 @@ export default class Tank extends Phaser.GameObjects.Container {
             let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
             this.scene.add.existing(shell)
             this.tankTurret.fire()
-            this.thrustLeft(3)
+            this.thrustLeft(2)
         })
 
         scene.matter.add.gameObject(this)
         this.body.frictionAir = 0.1
         this.body.mass = 100
         this.body.friction = 1
-
-        scene.add.existing(this)
     }
 
     preUpdate(time, delta) {
@@ -93,9 +94,14 @@ export default class Tank extends Phaser.GameObjects.Container {
         }
         this.body.torque = turn
 
-        if (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01) {
+        if (this.trackFrame++ % 5 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01)) {
             this.tracks.angle = this.angle
-            this.scene.tracksRenderTexture.draw(this.tracks, this.x, this.y)
+
+            this.scene.tracksRenderTexture.draw(
+                this.tracks,
+                this.x / this.scene.tracksRenderTexture.scale,
+                this.y / this.scene.tracksRenderTexture.scale,
+            )
         }
     }
 }

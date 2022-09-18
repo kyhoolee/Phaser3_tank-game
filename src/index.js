@@ -33,20 +33,38 @@ class TankGame extends Phaser.Scene {
             repeat: 0,
         })
 
-        const tileSize = 200
-        const mazeSize = {x: 16, y: 12}
+        const tileSize = {
+            x: 200,
+            y: 200,
+        }
+        const mazeSize = {
+            x: Phaser.Math.RND.between(3, 8),
+            y: Phaser.Math.RND.between(3, 8),
+        }
 
-        this.tracksRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize, mazeSize.y * tileSize)
-        this.tracksRenderTexture.alpha = 0.7
+        let tracksResolutionDivider = 2
+        this.tracksRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
+        this.tracksRenderTexture.setScale(tracksResolutionDivider)
 
-        this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize, tileSize)
+        this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
+        this.add.existing(this.maze)
 
-        this.tank = new Tank(this, 100, 100)
+        const tankSpawn = {
+            x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
+            y: Phaser.Math.RND.between(0, mazeSize.y - 1) * tileSize.y + tileSize.y * 0.5,
+        }
 
-        this.cameras.main.zoom = 0.5
+        this.tank = new Tank(this, tankSpawn.x, tankSpawn.y)
+        this.tank.setAngle(Phaser.Math.RND.angle())
+        this.add.existing(this.tank)
+
         this.cameras.main.setBackgroundColor('#9393bf')
+        let margin = 100
+        this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / (mazeSize.x * tileSize.x), (this.cameras.main.height - margin) / (mazeSize.y * tileSize.y)))
+        this.cameras.main.centerOn(mazeSize.x * tileSize.x / 2, mazeSize.y * tileSize.y / 2)
 
         this.input.keyboard.addKey('r').on('down', () => {
+            this.input.keyboard.removeAllKeys()
             this.scene.restart()
         })
     }
@@ -54,8 +72,8 @@ class TankGame extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
     physics: {
         default: 'matter',
         matter: {
