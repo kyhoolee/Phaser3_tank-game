@@ -79,6 +79,15 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.body.friction = 1
     }
 
+    drawTracks() {
+        this.tracks.angle = this.angle
+        this.scene.tracksRenderTexture.draw(
+            this.tracks,
+            this.x / this.scene.tracksRenderTexture.scale,
+            this.y / this.scene.tracksRenderTexture.scale,
+        )
+    }
+
     preUpdate(time, delta) {
         let throttle = 0
         let throttleRate = 0.05
@@ -101,13 +110,8 @@ export default class Tank extends Phaser.GameObjects.Container {
         if (turn !== 0)
             this.body.torque = turn
 
-        if (this.trackFrame++ % 5 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01)) {
-            this.tracks.angle = this.angle
-            this.scene.tracksRenderTexture.draw(
-                this.tracks,
-                this.x / this.scene.tracksRenderTexture.scale,
-                this.y / this.scene.tracksRenderTexture.scale,
-            )
-        }
+        if ((this.trackFrame++ % 5 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01))
+            || this.trackFrame++ % 20 === 0)
+            this.drawTracks()
     }
 }
