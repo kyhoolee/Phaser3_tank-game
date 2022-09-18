@@ -11,7 +11,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             isSensor: true,
         })
         this.lastCollision = 0
-        this.thrustLeft(0.1)
+        this.thrustLeft(0.05)
         this.setOnCollide((data) => {
                 if (data.timeCreated - this.lastCollision > 1
                     && (data.bodyA.gameObject instanceof Pillar || data.bodyA.gameObject instanceof Wall)) {
