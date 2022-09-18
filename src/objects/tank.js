@@ -65,7 +65,12 @@ export default class Tank extends Phaser.GameObjects.Container {
             let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
             this.scene.add.existing(shell)
             this.tankTurret.fire()
-            this.thrustLeft(2)
+            const knockback = {
+                linear: 2,
+                angular: 1.5,
+            }
+            this.thrustLeft(knockback.linear)
+            this.body.torque = Phaser.Math.RND.realInRange(-knockback.angular, knockback.angular)
         })
 
         scene.matter.add.gameObject(this)
@@ -83,7 +88,8 @@ export default class Tank extends Phaser.GameObjects.Container {
         if (this.movementKeys.down.isDown) {
             throttle -= throttleRate
         }
-        this.thrustRight(throttle)
+        if (throttle !== 0)
+            this.thrustRight(throttle)
         let turn = 0
         let turnRate = 0.1
         if (this.movementKeys.left.isDown) {
@@ -92,11 +98,11 @@ export default class Tank extends Phaser.GameObjects.Container {
         if (this.movementKeys.right.isDown) {
             turn += turnRate
         }
-        this.body.torque = turn
+        if (turn !== 0)
+            this.body.torque = turn
 
         if (this.trackFrame++ % 5 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01)) {
             this.tracks.angle = this.angle
-
             this.scene.tracksRenderTexture.draw(
                 this.tracks,
                 this.x / this.scene.tracksRenderTexture.scale,
