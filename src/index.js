@@ -21,6 +21,18 @@ class TankGame extends Phaser.Scene {
         const atlasTexture = this.textures.get('sprites')
         const sprites = atlasTexture.getFrameNames()
 
+        this.anims.create({
+            key: 'explosion',
+            frames: this.anims.generateFrameNames('sprites', {
+                prefix: 'explosion',
+                start: 1,
+                end: 5,
+                suffix: '.png',
+            }),
+            frameRate: 24,
+            repeat: 0,
+        })
+
         const tileSize = 200
         const mazeSize = {x: 16, y: 12}
 
