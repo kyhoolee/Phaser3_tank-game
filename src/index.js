@@ -37,9 +37,6 @@ class TankGame extends Phaser.Scene {
             y: Phaser.Math.RND.between(3, 5),
         }
 
-        this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
-        this.add.existing(this.maze)
-
         this.cameras.main.setBackgroundColor('#9393bf')
         let margin = 100
         this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / (mazeSize.x * tileSize.x), (this.cameras.main.height - margin) / (mazeSize.y * tileSize.y)))
@@ -48,16 +45,24 @@ class TankGame extends Phaser.Scene {
         let tracksResolutionDivider = 0.75 / this.cameras.main.zoom
         this.tracksRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
         this.tracksRenderTexture.setScale(tracksResolutionDivider)
-        console.log(tracksResolutionDivider)
 
-        const tankSpawn = {
-            x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
-            y: Phaser.Math.RND.between(0, mazeSize.y - 1) * tileSize.y + tileSize.y * 0.5,
+        this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
+        this.add.existing(this.maze)
+
+        const spawnTank = (color = 'blue') => {
+            const tankSpawn = {
+                x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
+                y: Phaser.Math.RND.between(0, mazeSize.y - 1) * tileSize.y + tileSize.y * 0.5,
+            }
+
+            this.tank = new Tank(this, tankSpawn.x, tankSpawn.y, color)
+            this.tank.setAngle(Phaser.Math.RND.angle())
+            this.add.existing(this.tank)
         }
 
-        this.tank = new Tank(this, tankSpawn.x, tankSpawn.y)
-        this.tank.setAngle(Phaser.Math.RND.angle())
-        this.add.existing(this.tank)
+        spawnTank('red')
+        spawnTank('green')
+        spawnTank('blue')
 
         this.input.keyboard.addKey('r').on('down', () => {
             this.input.keyboard.removeAllKeys()

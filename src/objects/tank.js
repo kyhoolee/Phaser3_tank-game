@@ -1,16 +1,16 @@
 import Shell from './shell'
 
 export class TankBody extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'tankBody_blue_outline.png')
+    constructor(scene, x, y, color = 'blue') {
+        super(scene, x, y, 'sprites', `tankBody_${color}_outline.png`)
         this.setOrigin(0.5, 0.5)
     }
 }
 
 export class TankTurret extends Phaser.GameObjects.Container {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, color = 'blue') {
         super(scene, x, y)
-        this.barrel = scene.add.sprite(0, 0, 'sprites', 'tankBlue_barrel1_outline.png')
+        this.barrel = scene.add.sprite(0, 0, 'sprites', `tank${color[0].toUpperCase() + color.substring(1)}_barrel1_outline.png`)
         this.barrel.setOrigin(0.5, 0)
         this.add(this.barrel)
     }
@@ -39,15 +39,15 @@ export class MuzzleFlash extends Phaser.GameObjects.Sprite {
 }
 
 export default class Tank extends Phaser.GameObjects.Container {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, color = 'blue') {
         super(scene, x, y)
 
         this.trackFrame = 0
 
-        this.tankBody = new TankBody(scene, 0, 0)
+        this.tankBody = new TankBody(scene, 0, 0, color)
         this.add(this.tankBody)
 
-        this.tankTurret = new TankTurret(scene, 0, 0)
+        this.tankTurret = new TankTurret(scene, 0, 0, color)
         this.add(this.tankTurret)
 
         this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'tracks')
@@ -98,7 +98,7 @@ export default class Tank extends Phaser.GameObjects.Container {
             throttle -= throttleRate
         }
         if (throttle !== 0)
-            this.thrustRight(throttle)
+            this.thrustRight(throttle * delta * 0.1)
         let turn = 0
         let turnRate = 0.1
         if (this.movementKeys.left.isDown) {
@@ -108,9 +108,9 @@ export default class Tank extends Phaser.GameObjects.Container {
             turn += turnRate
         }
         if (turn !== 0)
-            this.body.torque = turn
+            this.body.torque = turn * delta * 0.1
 
-        if ((this.trackFrame++ % 5 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01))
+        if ((this.trackFrame++ % 10 === 0 && (Math.abs(throttle) > 0.01 || Math.abs(turn) > 0.01))
             || this.trackFrame++ % 20 === 0)
             this.drawTracks()
     }
