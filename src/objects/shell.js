@@ -11,10 +11,14 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             mass: 5,
             isSensor: true,
         })
+        this.birthTime = scene.time.now
         this.lastCollision = 0
         this.setVelocity(initialVelocity.x, initialVelocity.y)
         this.thrustLeft(0.05)
         this.setOnCollide((data) => {
+                if (scene.time.now - this.birthTime < 50) {
+                    if (this.scene) this.explode()
+                }
                 if (data.bodyA.gameObject instanceof Pillar || data.bodyA.gameObject instanceof Wall) {
                     if (data.timeCreated - this.lastCollision > 1 && this.body) {
                         const normal = new Phaser.Math.Vector2(data.collision.normal)
@@ -27,13 +31,15 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                     }
                     this.lastCollision = data.timeCreated
                 } else {
-                    if (this.scene) {
-                        let explosion = new Explosion(this.scene, this.x, this.y)
-                        this.scene.add.existing(explosion)
-                        this.destroy()
-                    }
+                    if (this.scene) this.explode()
                 }
             },
         )
+    }
+
+    explode() {
+        let explosion = new Explosion(this.scene, this.x, this.y)
+        this.scene.add.existing(explosion)
+        this.destroy()
     }
 }

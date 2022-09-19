@@ -25,10 +25,12 @@ export default class Barrel extends Phaser.Physics.Matter.Image {
                     this.setTintFill(0xffffff)
                 else
                     this.clearTint()
+                if (this.scene)
+                    this.setScale(tween.getValue() * 0.2 + 0.9)
             },
             onComplete: () => {
                 if (this.scene) {
-                    let explosion = new Explosion(this.scene, this.x, this.y, 1.7)
+                    let explosion = new Explosion(this.scene, this.x, this.y, 1.8)
                     this.scene.add.existing(explosion)
                     this.destroy()
                 }

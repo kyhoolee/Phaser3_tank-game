@@ -46,8 +46,8 @@ class TankGame extends Phaser.Scene {
         this.cameras.main.centerOn(mazeSize.x * tileSize.x / 2, mazeSize.y * tileSize.y / 2)
 
         let tracksResolutionDivider = 0.75 / this.cameras.main.zoom
-        this.tracksRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
-        this.tracksRenderTexture.setScale(tracksResolutionDivider)
+        this.floorRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
+        this.floorRenderTexture.setScale(tracksResolutionDivider)
 
         this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
         this.add.existing(this.maze)
@@ -91,7 +91,7 @@ class TankGame extends Phaser.Scene {
             fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
         })
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 30; i++) {
             spawnBarrel()
         }
 

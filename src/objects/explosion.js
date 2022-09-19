@@ -22,13 +22,13 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             }
         })
         const crater = this.scene.add.sprite(this.x, this.y, 'crater')
-        crater.setAlpha(0.15)
+        crater.setAlpha(0.075 * scale)
         crater.setScale(scale)
         crater.setAngle(Phaser.Math.RND.angle())
-        this.scene.tracksRenderTexture.draw(
+        this.scene.floorRenderTexture.draw(
             crater,
-            this.x / this.scene.tracksRenderTexture.scale,
-            this.y / this.scene.tracksRenderTexture.scale,
+            this.x / this.scene.floorRenderTexture.scale,
+            this.y / this.scene.floorRenderTexture.scale,
         )
         crater.destroy()
         this.anims.play('explosion')

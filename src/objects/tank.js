@@ -53,7 +53,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'tracks')
         this.tracks.setVisible(false)
         this.tracks.alpha = 0.02
-        this.tracks.setScale(1 / scene.tracksRenderTexture.scale)
+        this.tracks.setScale(1 / scene.floorRenderTexture.scale)
         this.add(this.tracks)
 
         this.setSize(this.tankBody.displayWidth - 10, this.tankBody.displayHeight - 12)
@@ -80,10 +80,10 @@ export default class Tank extends Phaser.GameObjects.Container {
 
     drawTracks() {
         this.tracks.angle = this.angle
-        this.scene.tracksRenderTexture.draw(
+        this.scene.floorRenderTexture.draw(
             this.tracks,
-            this.x / this.scene.tracksRenderTexture.scale,
-            this.y / this.scene.tracksRenderTexture.scale,
+            this.x / this.scene.floorRenderTexture.scale,
+            this.y / this.scene.floorRenderTexture.scale,
         )
     }
 
