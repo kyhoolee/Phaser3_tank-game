@@ -11,6 +11,7 @@ import wall4Texture from './assets/wall4.png'
 import Maze from './objects/maze'
 import Tank from './objects/tank'
 import Barrel from './objects/barrel'
+import Crate from './objects/crate'
 
 class TankGame extends Phaser.Scene {
     constructor(config) {
@@ -86,6 +87,16 @@ class TankGame extends Phaser.Scene {
             this.add.existing(barrel)
         }
 
+        const spawnCrate = () => {
+            const crateSpawn = {
+                x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
+                y: Phaser.Math.RND.between(0, mazeSize.y - 1) * tileSize.y + tileSize.y * 0.5,
+            }
+
+            const crate = new Crate(this, crateSpawn.x, crateSpawn.y)
+            this.add.existing(crate)
+        }
+
         // spawnTank('red', {
         //     up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
         //     left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
@@ -104,6 +115,8 @@ class TankGame extends Phaser.Scene {
         for (let i = 0; i < Math.sqrt(mazeSize.x * mazeSize.y) + Phaser.Math.RND.between(-2, 3); i++) {
             spawnBarrel()
         }
+
+        spawnCrate()
 
         this.input.keyboard.addKey('r').on('down', () => {
             this.input.keyboard.removeAllKeys()

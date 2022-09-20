@@ -13,6 +13,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
         })
         this.birthTime = scene.time.now
         this.lastCollision = 0
+        this.setFixedRotation()
         this.setVelocity(initialVelocity.x, initialVelocity.y)
         this.thrustLeft(0.05)
         this.setOnCollide((data) => {
@@ -26,7 +27,6 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                         const dot = normal.dot(velocity)
                         const reflected = velocity.subtract(normal.scale(2 * dot))
                         this.setVelocity(reflected.x, reflected.y)
-                        this.setAngularVelocity(0)
                         this.setAngle(Phaser.Math.RadToDeg(Math.atan2(this.body.velocity.y, this.body.velocity.x)) + 90)
                     }
                     this.lastCollision = data.timeCreated
