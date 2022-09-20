@@ -2,6 +2,23 @@ import Phaser from 'phaser'
 import {Pillar, Wall} from './maze'
 import Explosion from './explosion'
 
+class Spark extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y) {
+        super(scene, x, y, 'sprites', 'explosionSmoke3.png')
+        this.setScale(0.25)
+        this.setAngle(Phaser.Math.RND.angle())
+        this.scene.tweens.add({
+            targets: this,
+            angle: Phaser.Math.RND.angle(),
+            duration: 50,
+            ease: 'Quad.easeIn',
+            onComplete: () => {
+                this.destroy()
+            },
+        })
+    }
+}
+
 export default class Shell extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0)) {
         super(scene.matter.world, x, y, 'sprites', 'bulletDark1_outline.png', {
@@ -28,6 +45,9 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                         const reflected = velocity.subtract(normal.scale(2 * dot))
                         this.setVelocity(reflected.x, reflected.y)
                         this.setAngle(Phaser.Math.RadToDeg(Math.atan2(this.body.velocity.y, this.body.velocity.x)) + 90)
+
+                        const spark = new Spark(this.scene, this.x, this.y)
+                        scene.add.existing(spark)
                     }
                     this.lastCollision = data.timeCreated
                 } else {
