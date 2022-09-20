@@ -10,7 +10,7 @@ export class TankBody extends Phaser.GameObjects.Sprite {
 export class TankTurret extends Phaser.GameObjects.Container {
     constructor(scene, x, y, color = 'blue') {
         super(scene, x, y)
-        this.barrel = scene.add.sprite(0, 0, 'sprites', `tank${color[0].toUpperCase() + color.substring(1)}_barrel1_outline.png`)
+        this.barrel = scene.add.sprite(0, 0, 'sprites', `tank${color[0].toUpperCase() + color.substring(1)}_barrel2_outline.png`)
         this.barrel.setOrigin(0.5, 0)
         this.add(this.barrel)
     }
@@ -70,7 +70,16 @@ export default class Tank extends Phaser.GameObjects.Container {
             }
             this.thrustLeft(knockback.linear)
             this.body.torque = Phaser.Math.RND.realInRange(-knockback.angular, knockback.angular)
+            scene.sound.play('shot')
         })
+
+        this.motorPower = 0
+
+        this.engineSound = scene.sound.add('engine', {
+            loop: true,
+            volume: 0.1,
+        })
+        this.engineSound.play()
 
         scene.matter.add.gameObject(this)
         this.body.frictionAir = 0.1
@@ -108,6 +117,15 @@ export default class Tank extends Phaser.GameObjects.Container {
         }
         if (turn !== 0)
             this.body.torque = turn * delta * 0.1
+
+        this.motorPower = Phaser.Math.Linear(this.motorPower,
+            (throttle !== 0 ? 0.7 : 0) + (turn !== 0 ? 0.3 : 0),
+            delta * 0.003,
+        )
+        this.engineSound.volume = Phaser.Math.Linear(0.2, 1, this.motorPower)
+        this.engineSound.detune = Phaser.Math.Linear(-500, 500, this.motorPower)
+        this.engineSound.rate = Phaser.Math.Linear(0.7, 1, this.motorPower)
+        console.log(this.motorPower)
 
         if (this.trackFrame % 5 === 0 && (this.body.speed > 0.01 || this.body.angularSpeed > 0.001)) {
             this.drawTracks()

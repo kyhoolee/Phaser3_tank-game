@@ -4,7 +4,7 @@ export class Wall extends Phaser.Physics.Matter.Image {
     // create sprite between two points
     constructor(scene, x1, y1, x2, y2) {
         super(scene.matter.world, x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5,
-            Phaser.Math.RND.pick(['wall', 'wall1', 'wall2', 'wall3', 'wall4']), 0, {
+            Phaser.Math.RND.pick(['wall1', 'wall2', 'wall3', 'wall4', 'wall5']), 0, {
                 isStatic: true,
             },
         )

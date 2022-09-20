@@ -3,11 +3,13 @@ import spritesTexture from './assets/allSprites_retina.png'
 import spritesAtlas from './assets/allSprites_retina.xml'
 import tracksTexture from './assets/tracks.png'
 import craterTexture from './assets/crater.png'
-import wallTexture from './assets/wall.png'
 import wall1Texture from './assets/wall1.png'
 import wall2Texture from './assets/wall2.png'
 import wall3Texture from './assets/wall3.png'
 import wall4Texture from './assets/wall4.png'
+import wall5Texture from './assets/wall5.png'
+import engineAudio from './audio/engine1.mp3'
+import shotAudio from './audio/shot2.mp3'
 import Maze from './objects/maze'
 import Tank from './objects/tank'
 import Barrel from './objects/barrel'
@@ -22,14 +24,18 @@ class TankGame extends Phaser.Scene {
         this.load.atlasXML('sprites', spritesTexture, spritesAtlas)
         this.load.image('tracks', tracksTexture)
         this.load.image('crater', craterTexture)
-        this.load.image('wall', wallTexture)
         this.load.image('wall1', wall1Texture)
         this.load.image('wall2', wall2Texture)
         this.load.image('wall3', wall3Texture)
         this.load.image('wall4', wall4Texture)
+        this.load.image('wall5', wall5Texture)
+        this.load.audio('engine', engineAudio)
+        this.load.audio('shot', shotAudio)
     }
 
     create() {
+        this.sound.unlock()
+
         this.anims.create({
             key: 'explosion',
             frames: this.anims.generateFrameNames('sprites', {
