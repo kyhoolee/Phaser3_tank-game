@@ -3,14 +3,15 @@ import Phaser from 'phaser'
 export class Wall extends Phaser.Physics.Matter.Image {
     // create sprite between two points
     constructor(scene, x1, y1, x2, y2) {
-        super(scene.matter.world, x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5, 'sprites', Phaser.Math.RND.pick(['fenceYellow.png', 'fenceRed.png']), {
+        super(scene.matter.world, x1 + (x2 - x1) * 0.5, y1 + (y2 - y1) * 0.5,
+            Phaser.Math.RND.pick(['wall', 'wall1', 'wall2', 'wall3', 'wall4']), 0, {
                 isStatic: true,
             },
         )
         let width = 40
         this.setScale(Phaser.Math.Distance.Between(x1, y1, x2, y2) / this.width)
         this.setScale(this.scaleX, width / this.height)
-        this.setRotation(Phaser.Math.Angle.Between(x1, y1, x2, y2))
+        this.setRotation(Phaser.Math.Angle.Between(x1, y1, x2, y2) + Phaser.Math.RND.pick([0, Math.PI]))
     }
 }
 
@@ -51,7 +52,7 @@ export default class Maze extends Phaser.GameObjects.Container {
             ),
         )
         this.generate(this.cells[0][0])
-        this.removeWalls(10)
+        this.removeWalls(Math.sqrt(width * height))
         this.generate(this.cells[0][0])
         this.removeWalls(this.width * this.height / 5)
         this.createWallObjects()
