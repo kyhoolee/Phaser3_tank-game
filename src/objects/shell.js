@@ -31,6 +31,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
         this.birthTime = scene.time.now
         this.lastCollision = 0
         this.setFixedRotation()
+        this.isBouncing = false
         this.setVelocity(initialVelocity.x, initialVelocity.y)
         this.thrustLeft(0.05)
         this.setOnCollide((data) => {
@@ -38,7 +39,8 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                     if (this.scene) this.explode()
                 }
                 if (data.bodyA.gameObject instanceof Pillar || data.bodyA.gameObject instanceof Wall) {
-                    if (data.timeCreated - this.lastCollision > 1 && this.body) {
+                    if (!this.isBouncing && data.timeCreated - this.lastCollision > 1 && this.body) {
+                        this.isBouncing = true
                         const normal = new Phaser.Math.Vector2(data.collision.normal)
                         const velocity = new Phaser.Math.Vector2(this.body.velocity)
                         const dot = normal.dot(velocity)
@@ -60,6 +62,12 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                 }
             },
         )
+
+        this.setOnCollideEnd((data) => {
+            if (data.bodyA.gameObject instanceof Pillar || data.bodyA.gameObject instanceof Wall) {
+                this.isBouncing = false
+            }
+        })
 
         this.airSound = scene.sound.add('air', {
             loop: true,

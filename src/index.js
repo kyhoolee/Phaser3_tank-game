@@ -130,7 +130,9 @@ class TankGame extends Phaser.Scene {
             spawnBarrel()
         }
 
-        spawnCrate()
+        for (let i = 0; i < Math.pow(mazeSize.x * mazeSize.y, 0.2); i++) {
+            spawnCrate()
+        }
 
         const floorDecal = this.add.rectangle(0, 0, 20, 20, 0x000000, 0.1)
         for (let i = 0; i < mazeSize.x * mazeSize.y * 3; i++) {
@@ -155,6 +157,8 @@ const config = {
     type: Phaser.AUTO,
     width: window.innerWidth,
     height: window.innerHeight,
+    pixelArt: true,
+    antialias: true,
     physics: {
         default: 'matter',
         matter: {
