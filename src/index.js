@@ -10,6 +10,9 @@ import wall4Texture from './assets/wall4.png'
 import wall5Texture from './assets/wall5.png'
 import engineAudio from './audio/engine1.mp3'
 import shotAudio from './audio/shot2.mp3'
+import explosionAudio from './audio/explosion1.mp3'
+import ricochetAudio from './audio/ping.mp3'
+import airAudio from './audio/noise.mp3'
 import Maze from './objects/maze'
 import Tank from './objects/tank'
 import Barrel from './objects/barrel'
@@ -31,6 +34,9 @@ class TankGame extends Phaser.Scene {
         this.load.image('wall5', wall5Texture)
         this.load.audio('engine', engineAudio)
         this.load.audio('shot', shotAudio)
+        this.load.audio('explosion', explosionAudio)
+        this.load.audio('ricochet', ricochetAudio)
+        this.load.audio('air', airAudio)
     }
 
     create() {
@@ -103,22 +109,22 @@ class TankGame extends Phaser.Scene {
             this.add.existing(crate)
         }
 
-        // spawnTank('red', {
-        //     up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-        //     left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-        //     down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-        //     right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-        //     fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
-        // })
+        spawnTank('red', {
+            up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+            left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+            down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+            right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+            fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+        })
         spawnTank('blue', {
             up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
             left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
             down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
             right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-            fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
         })
 
-        for (let i = 0; i < Math.sqrt(mazeSize.x * mazeSize.y) + Phaser.Math.RND.between(-2, 3); i++) {
+        for (let i = 0; i < Math.pow(mazeSize.x * mazeSize.y, 0.7) + Phaser.Math.RND.between(-2, 3); i++) {
             spawnBarrel()
         }
 
@@ -126,6 +132,7 @@ class TankGame extends Phaser.Scene {
 
         this.input.keyboard.addKey('r').on('down', () => {
             this.input.keyboard.removeAllKeys()
+            this.sound.stopAll()
             this.scene.restart()
         })
     }

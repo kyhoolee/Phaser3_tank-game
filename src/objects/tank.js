@@ -125,7 +125,6 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.engineSound.volume = Phaser.Math.Linear(0.2, 1, this.motorPower)
         this.engineSound.detune = Phaser.Math.Linear(-500, 500, this.motorPower)
         this.engineSound.rate = Phaser.Math.Linear(0.7, 1, this.motorPower)
-        console.log(this.motorPower)
 
         if (this.trackFrame % 5 === 0 && (this.body.speed > 0.01 || this.body.angularSpeed > 0.001)) {
             this.drawTracks()

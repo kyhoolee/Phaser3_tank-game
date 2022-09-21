@@ -21,6 +21,13 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
                 data.bodyA.gameObject.damage()
             }
         })
+
+        scene.sound.play('explosion', {
+            volume: 0.3 + scale * 0.3,
+            rate: Phaser.Math.RND.realInRange(1.9, 2.3) - scale * 0.5,
+            detune: Phaser.Math.RND.realInRange(-100, 100) - scale * 500,
+        })
+
         const crater = this.scene.add.sprite(this.x, this.y, 'crater')
         crater.setAlpha(0.075 * scale)
         crater.setScale(scale)
@@ -30,6 +37,7 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             this.y / this.scene.floorRenderTexture.scale,
         )
         crater.destroy()
+
         this.anims.play('explosion')
         this.once('animationcomplete', () => {
             this.destroy()

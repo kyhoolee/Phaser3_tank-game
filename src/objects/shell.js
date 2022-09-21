@@ -48,6 +48,11 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
 
                         const spark = new Spark(this.scene, this.x, this.y)
                         scene.add.existing(spark)
+
+                        scene.sound.play('ricochet', {
+                            volume: 0.25,
+                            detune: Phaser.Math.RND.realInRange(-100, 100),
+                        })
                     }
                     this.lastCollision = data.timeCreated
                 } else {
@@ -55,11 +60,19 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                 }
             },
         )
+
+        this.airSound = scene.sound.add('air', {
+            loop: true,
+            volume: 0.4,
+            detune: Phaser.Math.RND.realInRange(-100, 100),
+        })
+        this.airSound.play()
     }
 
     explode() {
         let explosion = new Explosion(this.scene, this.x, this.y)
         this.scene.add.existing(explosion)
+        this.airSound.stop()
         this.destroy()
     }
 }
