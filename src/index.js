@@ -133,11 +133,11 @@ class TankGame extends Phaser.Scene {
         spawnCrate()
 
         const floorDecal = this.add.rectangle(0, 0, 20, 20, 0x000000, 0.1)
-        for (let i = 0; i < 100; i++) {
-            floorDecal.setPosition(Phaser.Math.RND.between(0, mazeSize.x * tileSize.x), Phaser.Math.RND.between(0, mazeSize.y * tileSize.y))
+        for (let i = 0; i < mazeSize.x * mazeSize.y * 3; i++) {
+            floorDecal.setPosition(Phaser.Math.RND.realInRange(0, mazeSize.x * tileSize.x), Phaser.Math.RND.realInRange(0, mazeSize.y * tileSize.y))
             floorDecal.setAngle(Phaser.Math.RND.angle())
             floorDecal.setScale(Phaser.Math.RND.between(1, 5))
-            floorDecal.setAlpha(Phaser.Math.RND.realInRange(0, 0.6))
+            floorDecal.setAlpha(Phaser.Math.RND.realInRange(0, 0.5))
             this.floorRenderTexture.draw(floorDecal)
         }
         floorDecal.destroy()
