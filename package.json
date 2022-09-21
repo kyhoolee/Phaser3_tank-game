@@ -36,7 +36,8 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "phaser": "^3.50.0"
+    "phaser": "^3.50.0",
+    "phaser-webpack-loader": "^2.0.0"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",

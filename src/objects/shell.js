@@ -4,7 +4,7 @@ import Explosion from './explosion'
 
 class Spark extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'explosionSmoke3.png')
+        super(scene, x, y, 'atlas', 'explosionSmoke3')
         this.setScale(0.25)
         this.setAngle(Phaser.Math.RND.angle())
         this.scene.tweens.add({
@@ -21,7 +21,7 @@ class Spark extends Phaser.GameObjects.Sprite {
 
 export default class Shell extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0)) {
-        super(scene.matter.world, x, y, 'sprites', 'bulletDark1_outline.png', {
+        super(scene.matter.world, x, y, 'atlas', 'bulletDark1_outline', {
             angle: Phaser.Math.DegToRad(angle),
             frictionAir: 0,
             friction: 0,
@@ -51,7 +51,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
                         const spark = new Spark(this.scene, this.x, this.y)
                         scene.add.existing(spark)
 
-                        scene.sound.play('ricochet', {
+                        scene.sound.play('ping', {
                             volume: 0.25,
                             detune: Phaser.Math.RND.realInRange(-100, 100),
                         })
@@ -69,7 +69,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             }
         })
 
-        this.airSound = scene.sound.add('air', {
+        this.airSound = scene.sound.add('noise', {
             loop: true,
             volume: 0.4,
             detune: Phaser.Math.RND.realInRange(-100, 100),

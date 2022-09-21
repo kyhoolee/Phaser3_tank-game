@@ -2,7 +2,7 @@ import Explosion from './explosion'
 
 export default class Barrel extends Phaser.Physics.Matter.Image {
     constructor(scene, x, y) {
-        super(scene.matter.world, x, y, 'sprites', 'barrelRed_top.png', {
+        super(scene.matter.world, x, y, 'atlas', 'barrelRed_top', {
             mass: 15,
             frictionAir: 0.05,
             shape: {

@@ -20,12 +20,8 @@ module.exports = {
                 use: 'raw-loader',
             },
             {
-                test: /\.(gif|png|jpe?g|svg|xml)$/i,
-                use: 'file-loader',
-            },
-            {
-                test: /\.mp3$/,
-                loader: 'file-loader',
+                test: /\.(png|jpg|gif|ico|svg|pvr|pkm|wav|mp3|webm)$/,
+                use: ['file-loader?name=assets/[name].[ext]?[hash]'],
             },
         ],
     },
@@ -41,4 +37,9 @@ module.exports = {
             template: './index.html',
         }),
     ],
+    resolve: {
+        alias: {
+            assets: path.join(__dirname, '../src/assets'),
+        },
+    },
 }

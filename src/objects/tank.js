@@ -2,7 +2,7 @@ import Shell from './shell'
 
 export class TankBody extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, color = 'blue') {
-        super(scene, x, y, 'sprites', `tankBody_${color}_outline.png`)
+        super(scene, x, y, 'atlas', `tankBody_${color}_outline`)
         this.setOrigin(0.5, 0.5)
     }
 }
@@ -10,7 +10,7 @@ export class TankBody extends Phaser.GameObjects.Sprite {
 export class TankTurret extends Phaser.GameObjects.Container {
     constructor(scene, x, y, color = 'blue') {
         super(scene, x, y)
-        this.barrel = scene.add.sprite(0, 0, 'sprites', `tank${color[0].toUpperCase() + color.substring(1)}_barrel2_outline.png`)
+        this.barrel = scene.add.sprite(0, 0, 'atlas', `tank${color[0].toUpperCase() + color.substring(1)}_barrel2_outline`)
         this.barrel.setOrigin(0.5, 0)
         this.add(this.barrel)
     }
@@ -29,7 +29,7 @@ export class TankTurret extends Phaser.GameObjects.Container {
 
 export class MuzzleFlash extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
-        super(scene, x, y, 'sprites', 'shotLarge.png')
+        super(scene, x, y, 'atlas', 'shotLarge')
         this.setOrigin(0.5, 0)
         scene.time.addEvent({
             delay: 75,
@@ -70,12 +70,12 @@ export default class Tank extends Phaser.GameObjects.Container {
             }
             this.thrustLeft(knockback.linear)
             this.body.torque = Phaser.Math.RND.realInRange(-knockback.angular, knockback.angular)
-            scene.sound.play('shot')
+            scene.sound.play('shot2')
         })
 
         this.motorPower = 0
 
-        this.engineSound = scene.sound.add('engine', {
+        this.engineSound = scene.sound.add('engine1', {
             loop: true,
             volume: 0.1,
         })

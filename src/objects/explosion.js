@@ -2,7 +2,7 @@ import Barrel from './barrel'
 
 export default class Explosion extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, scale = 1) {
-        super(scene.matter.world, x, y, 'sprites', 'explosion1.png', {
+        super(scene.matter.world, x, y, 'atlas', 'explosion1', {
             isSensor: true,
             isStatic: true,
             shape: {
@@ -22,13 +22,13 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             }
         })
 
-        scene.sound.play('explosion', {
+        scene.sound.play('explosion1', {
             volume: 0.3 + scale * 0.3,
             rate: Phaser.Math.RND.realInRange(1.9, 2.3) - scale * 0.5,
             detune: Phaser.Math.RND.realInRange(-100, 100) - scale * 500,
         })
 
-        const crater = this.scene.add.sprite(this.x, this.y, 'crater')
+        const crater = this.scene.add.sprite(this.x, this.y, 'atlas', 'crater')
         crater.setAlpha(0.075 * scale)
         crater.setScale(scale)
         this.scene.floorRenderTexture.draw(
