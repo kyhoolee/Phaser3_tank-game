@@ -13,6 +13,7 @@ import shotAudio from './audio/shot2.mp3'
 import explosionAudio from './audio/explosion1.mp3'
 import ricochetAudio from './audio/ping.mp3'
 import airAudio from './audio/noise.mp3'
+import collectAudio from './audio/equip.mp3'
 import Maze from './objects/maze'
 import Tank from './objects/tank'
 import Barrel from './objects/barrel'
@@ -37,6 +38,7 @@ class TankGame extends Phaser.Scene {
         this.load.audio('explosion', explosionAudio)
         this.load.audio('ricochet', ricochetAudio)
         this.load.audio('air', airAudio)
+        this.load.audio('collect', collectAudio)
     }
 
     create() {
@@ -130,9 +132,20 @@ class TankGame extends Phaser.Scene {
 
         spawnCrate()
 
+        const floorDecal = this.add.rectangle(0, 0, 20, 20, 0x000000, 0.1)
+        for (let i = 0; i < 100; i++) {
+            floorDecal.setPosition(Phaser.Math.RND.between(0, mazeSize.x * tileSize.x), Phaser.Math.RND.between(0, mazeSize.y * tileSize.y))
+            floorDecal.setAngle(Phaser.Math.RND.angle())
+            floorDecal.setScale(Phaser.Math.RND.between(1, 5))
+            floorDecal.setAlpha(Phaser.Math.RND.realInRange(0, 0.6))
+            this.floorRenderTexture.draw(floorDecal)
+        }
+        floorDecal.destroy()
+
         this.input.keyboard.addKey('r').on('down', () => {
             this.input.keyboard.removeAllKeys()
             this.sound.stopAll()
+            this.tweens.killAll()
             this.scene.restart()
         })
     }

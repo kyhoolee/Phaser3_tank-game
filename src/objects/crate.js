@@ -13,6 +13,9 @@ export default class Crate extends Phaser.Physics.Matter.Image {
                 if (!this.collected) {
                     this.collected = true
                     this.setCollisionCategory(null)
+                    scene.sound.play('collect', {
+                        volume: 3.5,
+                    })
                     const tank = data.bodyA.gameObject
                     scene.tweens.addCounter({
                         targets: this,
@@ -22,7 +25,7 @@ export default class Crate extends Phaser.Physics.Matter.Image {
                         onUpdate: (tween) => {
                             const target = new Phaser.Math.Vector2(this.body.position).lerp(tank.body.position, tween.getValue())
                             this.setPosition(target.x, target.y)
-                            this.setScale(Math.pow(1 - tween.getValue(), 2))
+                            this.setScale(1 - Math.pow(tween.getValue(), 2))
                         },
                         onComplete: () => {
                             this.destroy()
