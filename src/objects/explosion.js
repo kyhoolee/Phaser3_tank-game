@@ -28,6 +28,8 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             detune: Phaser.Math.RND.realInRange(-100, 100) - scale * 500,
         })
 
+        scene.cameras.main.shake(100 * scale, 0.008 * ( 1 + scale * 0.3))
+
         const crater = this.scene.add.sprite(this.x, this.y, 'atlas', 'crater')
         crater.setAlpha(0.075 * scale)
         crater.setScale(scale)

@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import {Pillar, Wall} from './maze'
 import Explosion from './explosion'
+import Trail from "./trail"
 
 class Spark extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
@@ -20,7 +21,7 @@ class Spark extends Phaser.GameObjects.Sprite {
 }
 
 export default class Shell extends Phaser.Physics.Matter.Sprite {
-    constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0)) {
+    constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0), speed = 1) {
         super(scene.matter.world, x, y, 'atlas', 'bulletDark1_outline', {
             angle: Phaser.Math.DegToRad(angle),
             frictionAir: 0,
@@ -33,7 +34,8 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
         this.setFixedRotation()
         this.isBouncing = false
         this.setVelocity(initialVelocity.x, initialVelocity.y)
-        this.thrustLeft(0.05)
+        this.speed = speed
+        this.thrustLeft(0.05 * speed)
         this.setOnCollide((data) => {
                 if (scene.time.now - this.birthTime < 50) {
                     if (this.scene) this.explode()
@@ -53,7 +55,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
 
                         scene.sound.play('ping', {
                             volume: 0.25,
-                            detune: Phaser.Math.RND.realInRange(-100, 100),
+                            detune: Phaser.Math.RND.realInRange(-200, 200),
                         })
                     }
                     this.lastCollision = data.timeCreated
@@ -69,6 +71,9 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             }
         })
 
+        this.trail = new Trail(scene)
+        scene.add.existing(this.trail)
+
         this.airSound = scene.sound.add('noise', {
             loop: true,
             volume: 0.4,
@@ -77,10 +82,15 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
         this.airSound.play()
     }
 
+    preUpdate(time, delta) {
+        this.trail.addPoint(this.x, this.y, 1000 / this.speed)
+    }
+
     explode() {
         let explosion = new Explosion(this.scene, this.x, this.y)
         this.scene.add.existing(explosion)
         this.airSound.stop()
+        this.trail.destroy()
         this.destroy()
     }
 }

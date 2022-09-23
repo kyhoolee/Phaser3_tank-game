@@ -17,7 +17,7 @@ class TankGame extends Phaser.Scene {
 
     create() {
         this.loader.start(AssetManifest)
-        this.loader.load().then(() => {
+        this.loader.load().then((config, addToScene) => {
             this.sound.unlock()
 
             this.anims.create({
@@ -40,10 +40,14 @@ class TankGame extends Phaser.Scene {
                 y: Phaser.Math.RND.between(3, 5),
             }
 
-            this.cameras.main.setBackgroundColor('#9393bf')
-            let margin = 100
-            this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / (mazeSize.x * tileSize.x), (this.cameras.main.height - margin) / (mazeSize.y * tileSize.y)))
-            this.cameras.main.centerOn(mazeSize.x * tileSize.x / 2, mazeSize.y * tileSize.y / 2)
+            this.fitCameraToRect({
+                    x: 0,
+                    y: 0,
+                    width: tileSize.x * mazeSize.x,
+                    height: tileSize.y * mazeSize.y,
+                },
+                200,
+            )
 
             let tracksResolutionDivider = 0.75 / this.cameras.main.zoom
             this.floorRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
@@ -125,7 +129,32 @@ class TankGame extends Phaser.Scene {
                 this.tweens.killAll()
                 this.scene.restart()
             })
+
+            this.debug = this.add.text(-22, -90, '', {font: '64px Roboto', fill: '#2f2c23'})
         })
+    }
+
+    update(time, delta) {
+        if (this.debug)
+            this.debug.setText([
+                'FPS: ' + this.game.loop.actualFps.toFixed(2),
+            ])
+    }
+
+    fitCameraToRect(rect, margin = 0) {
+        this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height))
+        this.cameras.main.centerOn(rect.x + rect.width / 2, rect.y + rect.height / 2)
+    }
+
+    resize(gameSize, baseSize, displaySize, resolution) {
+        this.fitCameraToRect({
+                x: 0,
+                y: 0,
+                width: this.maze.width * this.maze.cellWidth,
+                height: this.maze.height * this.maze.cellHeight,
+            },
+            200,
+        )
     }
 }
 
@@ -135,6 +164,7 @@ const config = {
     height: window.innerHeight,
     physics: {
         default: 'matter',
+        fps: 120,
         matter: {
             gravity: {y: 0},
             // debug: {
@@ -150,6 +180,12 @@ const config = {
     },
     parent: 'tank-game',
     scene: TankGame,
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+        width: '100%',
+        height: '100%',
+    },
+    backgroundColor: '#9393bf',
 }
 
 const game = new Phaser.Game(config)

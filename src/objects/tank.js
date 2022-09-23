@@ -50,7 +50,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.tankTurret = new TankTurret(scene, 0, 0, color)
         this.add(this.tankTurret)
 
-        this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'tracks')
+        this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'atlas', 'tracks')
         this.tracks.setVisible(false)
         this.tracks.alpha = 0.02
         this.tracks.setScale(1 / scene.floorRenderTexture.scale)
@@ -61,7 +61,14 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.inputKeys = inputKeys
         inputKeys.fire.on('down', (event) => {
             const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.barrel.height).rotate(Phaser.Math.PI2 / 4)
-            let shell = new Shell(scene, this.x + fireOffset.x, this.y + fireOffset.y, this.angle + this.tankTurret.angle + 180)
+            let shell = new Shell(
+                scene,
+                this.x + fireOffset.x,
+                this.y + fireOffset.y,
+                this.angle + this.tankTurret.angle + 180,
+                undefined,
+                1,
+            )
             this.scene.add.existing(shell)
             this.tankTurret.fire()
             const knockback = {
