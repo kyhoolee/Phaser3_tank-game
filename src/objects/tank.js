@@ -67,7 +67,7 @@ export default class Tank extends Phaser.GameObjects.Container {
                 this.y + fireOffset.y,
                 this.angle + this.tankTurret.angle + 180,
                 undefined,
-                1,
+                2,
             )
             this.scene.add.existing(shell)
             this.tankTurret.fire()

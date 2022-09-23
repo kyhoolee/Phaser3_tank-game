@@ -36,8 +36,8 @@ class TankGame extends Phaser.Scene {
                 y: 200,
             }
             const mazeSize = {
-                x: Phaser.Math.RND.between(5, 8),
-                y: Phaser.Math.RND.between(3, 5),
+                x: Phaser.Math.RND.between(5, 12),
+                y: Phaser.Math.RND.between(3, 9),
             }
 
             this.fitCameraToRect({
@@ -56,6 +56,8 @@ class TankGame extends Phaser.Scene {
             this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
             this.add.existing(this.maze)
 
+            this.tanks = []
+
             const spawnTank = (color = 'blue', inputKeys) => {
                 const tankSpawn = {
                     x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
@@ -65,6 +67,7 @@ class TankGame extends Phaser.Scene {
                 const tank = new Tank(this, tankSpawn.x, tankSpawn.y, color, inputKeys)
                 tank.setAngle(Phaser.Math.RND.angle())
                 this.add.existing(tank)
+                this.tanks.push(tank)
             }
 
             const spawnBarrel = () => {
@@ -131,6 +134,18 @@ class TankGame extends Phaser.Scene {
             })
 
             this.debug = this.add.text(-22, -90, '', {font: '64px Roboto', fill: '#2f2c23'})
+
+            this.scale.on('resize', (gameSize, baseSize, displaySize, resolution) => {
+                this.fitCameraToRect({
+                        x: 0,
+                        y: 0,
+                        width: tileSize.x * mazeSize.x,
+                        height: tileSize.y * mazeSize.y,
+                    },
+                    200,
+                    500,
+                )
+            })
         })
     }
 
@@ -141,20 +156,26 @@ class TankGame extends Phaser.Scene {
             ])
     }
 
-    fitCameraToRect(rect, margin = 0) {
-        this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height))
-        this.cameras.main.centerOn(rect.x + rect.width / 2, rect.y + rect.height / 2)
-    }
-
-    resize(gameSize, baseSize, displaySize, resolution) {
-        this.fitCameraToRect({
-                x: 0,
-                y: 0,
-                width: this.maze.width * this.maze.cellWidth,
-                height: this.maze.height * this.maze.cellHeight,
-            },
-            200,
-        )
+    fitCameraToRect(rect, margin = 0, duration = 0) {
+        if (duration > 0)
+            this.tweens.addCounter({
+                from: 0,
+                to: 1,
+                duration: duration,
+                onUpdate: (tween) => {
+                    const targetZoom = Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height)
+                    const zoom = this.cameras.main.zoom + (targetZoom - this.cameras.main.zoom) * tween.getValue()
+                    this.cameras.main.setZoom(zoom)
+                    const targetCenter = new Phaser.Math.Vector2(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5)
+                    const center = new Phaser.Math.Vector2(this.cameras.main.centerX, this.cameras.main.centerY)
+                    center.lerp(targetCenter, tween.getValue())
+                    this.cameras.main.centerOn(center.x, center.y)
+                },
+            })
+        else {
+            this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height))
+            this.cameras.main.centerOn(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5)
+        }
     }
 }
 
@@ -164,18 +185,21 @@ const config = {
     height: window.innerHeight,
     physics: {
         default: 'matter',
-        fps: 120,
         matter: {
+            runner: {
+                isFixed: true,
+                delta: 8,
+            },
             gravity: {y: 0},
-            // debug: {
-            //     showBody: true,
-            //     showStaticBody: true,
-            //     showVelocity: true,
-            //     showCollisions: true,
-            //     showAxes: true,
-            //     showPositions: true,
-            //     showAngleIndicator: true,
-            // },
+            debug: {
+                showBody: true,
+                showStaticBody: true,
+                showVelocity: true,
+                showCollisions: true,
+                showAxes: true,
+                showPositions: true,
+                showAngleIndicator: true,
+            },
         },
     },
     parent: 'tank-game',

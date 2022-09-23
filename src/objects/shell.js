@@ -76,7 +76,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
 
         this.airSound = scene.sound.add('noise', {
             loop: true,
-            volume: 0.4,
+            volume: 3,
             detune: Phaser.Math.RND.realInRange(-100, 100),
         })
         this.airSound.play()
@@ -84,6 +84,22 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
 
     preUpdate(time, delta) {
         this.trail.addPoint(this.x, this.y, 1000 / this.speed)
+        const dist = Phaser.Math.Clamp(this.distanceToNearestTank() / 300, 0, 0.8)
+        this.airSound.rate = Math.sqrt(1 - dist)
+        this.airSound.volume = 3 * (1 - dist)
+    }
+
+    distanceToNearestTank() {
+        let distance = 100000
+        this.scene.tanks.forEach((tank) => {
+            if (tank !== this) {
+                let d = Phaser.Math.Distance.Between(this.x, this.y, tank.x, tank.y)
+                if (d < distance) {
+                    distance = d
+                }
+            }
+        })
+        return distance
     }
 
     explode() {
