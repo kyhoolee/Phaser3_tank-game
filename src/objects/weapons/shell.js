@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
-import {Pillar, Wall} from './maze'
-import Explosion from './explosion'
-import Trail from "./trail"
+import {Pillar, Wall} from '../maze'
+import Explosion from '../explosion'
+import Trail from "../trail"
 
 class Spark extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
@@ -21,8 +21,15 @@ class Spark extends Phaser.GameObjects.Sprite {
 }
 
 export default class Shell extends Phaser.Physics.Matter.Sprite {
-    constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0), speed = 1, color = 'dark') {
-        super(scene.matter.world, x, y, 'atlas', `bullet${color[0].toUpperCase() + color.substring(1)}1_outline`, {
+    constructor(scene, x, y,
+                angle,
+                initialVelocity = new Phaser.Math.Vector2(0, 0),
+                speed = 1,
+                color = 'dark',
+                type = 1,
+                explosionScale = 1,
+    ) {
+        super(scene.matter.world, x, y, 'atlas', `bullet${color[0].toUpperCase() + color.substring(1) + type}_outline`, {
             angle: Phaser.Math.DegToRad(angle),
             frictionAir: 0,
             friction: 0,
@@ -34,7 +41,8 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
         this.setFixedRotation()
         this.setVelocity(initialVelocity.x, initialVelocity.y)
         this.speed = speed
-        this.thrustLeft(0.05 * speed)
+        this.thrustLeft(0.05 * this.speed)
+        this.explosionScale = explosionScale
         this.setOnCollide((data) => {
                 if (scene.time.now - this.birthTime < 50) {
                     if (this.active) this.explode()
@@ -68,7 +76,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
     preUpdate(time, delta) {
         this.trail.addPoint(this.x, this.y, 1000 / this.speed)
         const dist = Phaser.Math.Clamp(this.distanceToNearestTank() / 300, 0, 0.9)
-        this.airSound.rate = Math.pow(1 - dist * 0.3, 0.5)
+        this.airSound.rate = Math.pow(1 - dist * 0.3, 0.5) / this.explosionScale
         this.airSound.volume = 3 * (1 - dist)
 
         const tip = new Phaser.Math.Vector2(this.x, this.y)
@@ -116,7 +124,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
     }
 
     explode() {
-        let explosion = new Explosion(this.scene, this.x, this.y)
+        let explosion = new Explosion(this.scene, this.x, this.y, this.explosionScale)
         this.scene.add.existing(explosion)
         this.airSound.stop()
         this.trail.destroy()

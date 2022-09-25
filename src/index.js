@@ -168,16 +168,12 @@ class TankGame extends Phaser.Scene {
                     const targetZoom = Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height)
                     const zoom = this.cameras.main.zoom + (targetZoom - this.cameras.main.zoom) * tween.getValue()
                     this.cameras.main.setZoom(zoom)
-                    const targetCenter = new Phaser.Math.Vector2(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5)
-                    const center = new Phaser.Math.Vector2(this.cameras.main.centerX, this.cameras.main.centerY)
-                    center.lerp(targetCenter, tween.getValue())
-                    this.cameras.main.centerOn(center.x, center.y)
                 },
             })
         else {
             this.cameras.main.setZoom(Math.min((this.cameras.main.width - margin) / rect.width, (this.cameras.main.height - margin) / rect.height))
-            this.cameras.main.centerOn(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5)
         }
+        this.cameras.main.centerOn(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5)
     }
 }
 
