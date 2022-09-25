@@ -21,8 +21,8 @@ class Spark extends Phaser.GameObjects.Sprite {
 }
 
 export default class Shell extends Phaser.Physics.Matter.Sprite {
-    constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0), speed = 1) {
-        super(scene.matter.world, x, y, 'atlas', 'bulletDark1_outline', {
+    constructor(scene, x, y, angle, initialVelocity = new Phaser.Math.Vector2(0, 0), speed = 1, color = 'dark') {
+        super(scene.matter.world, x, y, 'atlas', `bullet${color[0].toUpperCase() + color.substring(1)}1_outline`, {
             angle: Phaser.Math.DegToRad(angle),
             frictionAir: 0,
             friction: 0,

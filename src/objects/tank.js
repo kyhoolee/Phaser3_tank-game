@@ -1,40 +1,10 @@
 import Shell from './shell'
+import StandardTurret from "./turrets/standardTurret"
 
 export class TankBody extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, color = 'blue') {
         super(scene, x, y, 'atlas', `tankBody_${color}_outline`)
         this.setOrigin(0.5, 0.5)
-    }
-}
-
-export class TankTurret extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, color = 'blue') {
-        super(scene, x, y)
-        this.barrel = scene.add.sprite(0, 0, 'atlas', `tank${color[0].toUpperCase() + color.substring(1)}_barrel2_outline`)
-        this.barrel.setOrigin(0.5, 0)
-        this.add(this.barrel)
-    }
-
-    fire() {
-        let flash = new MuzzleFlash(this.scene, 0, this.barrel.height)
-        this.add(flash)
-        this.scene.tweens.add({
-            targets: this,
-            y: {from: -20, to: 0},
-            ease: 'linear',
-            duration: 700,
-        })
-    }
-}
-
-export class MuzzleFlash extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, 'atlas', 'shotLarge')
-        this.setOrigin(0.5, 0)
-        scene.time.addEvent({
-            delay: 75,
-            callback: () => this.destroy(),
-        })
     }
 }
 
@@ -44,10 +14,12 @@ export default class Tank extends Phaser.GameObjects.Container {
 
         this.trackFrame = 0
 
+        this.color = color
+
         this.tankBody = new TankBody(scene, 0, 0, color)
         this.add(this.tankBody)
 
-        this.tankTurret = new TankTurret(scene, 0, 0, color)
+        this.tankTurret = new StandardTurret(scene, 0, 0, this, color)
         this.add(this.tankTurret)
 
         this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'atlas', 'tracks')
@@ -60,24 +32,7 @@ export default class Tank extends Phaser.GameObjects.Container {
 
         this.inputKeys = inputKeys
         inputKeys.fire.on('down', (event) => {
-            const fireOffset = new Phaser.Math.Vector2().setToPolar(this.rotation + this.tankTurret.rotation, this.tankTurret.barrel.height).rotate(Phaser.Math.PI2 / 4)
-            let shell = new Shell(
-                scene,
-                this.x + fireOffset.x,
-                this.y + fireOffset.y,
-                this.angle + this.tankTurret.angle + 180,
-                undefined,
-                2,
-            )
-            this.scene.add.existing(shell)
             this.tankTurret.fire()
-            const knockback = {
-                linear: 2,
-                angular: 1.5,
-            }
-            this.thrustLeft(knockback.linear)
-            this.body.torque = Phaser.Math.RND.realInRange(-knockback.angular, knockback.angular)
-            scene.sound.play('shot2')
         })
 
         this.motorPower = 0

@@ -52,6 +52,7 @@ class TankGame extends Phaser.Scene {
             let tracksResolutionDivider = 0.75 / this.cameras.main.zoom
             this.floorRenderTexture = this.add.renderTexture(0, 0, mazeSize.x * tileSize.x / tracksResolutionDivider, mazeSize.y * tileSize.y / tracksResolutionDivider)
             this.floorRenderTexture.setScale(tracksResolutionDivider)
+            this.floorRenderTexture.fill(0x9393bf, 1)
 
             this.maze = new Maze(this, mazeSize.x, mazeSize.y, tileSize.x, tileSize.y)
             this.add.existing(this.maze)
