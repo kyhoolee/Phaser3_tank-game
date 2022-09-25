@@ -108,7 +108,7 @@ class TankGame extends Phaser.Scene {
                 fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
             })
 
-            for (let i = 0; i < Math.pow(mazeSize.x * mazeSize.y, 0.7) + Phaser.Math.RND.between(-2, 3); i++) {
+            for (let i = 0; i < Math.pow(mazeSize.x * mazeSize.y, 0.5) + Phaser.Math.RND.between(-2, 3); i++) {
                 spawnBarrel()
             }
 
@@ -130,6 +130,7 @@ class TankGame extends Phaser.Scene {
                 this.input.keyboard.removeAllKeys()
                 this.sound.stopAll()
                 this.tweens.killAll()
+                this.maze.raycaster.clearObstacle()
                 this.scene.restart()
             })
 

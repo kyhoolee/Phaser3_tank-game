@@ -30,37 +30,16 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             isSensor: true,
         })
         this.birthTime = scene.time.now
-        this.lastCollision = 0
+        this.lastPosition = {x: x, y: y}
         this.setFixedRotation()
-        this.isBouncing = false
         this.setVelocity(initialVelocity.x, initialVelocity.y)
         this.speed = speed
         this.thrustLeft(0.05 * speed)
         this.setOnCollide((data) => {
                 if (scene.time.now - this.birthTime < 50) {
-                    if (this.scene) this.explode()
-                }
-                if (data.bodyA.gameObject instanceof Pillar || data.bodyA.gameObject instanceof Wall) {
-                    if (!this.isBouncing && data.timeCreated - this.lastCollision > 1 && this.body) {
-                        this.isBouncing = true
-                        const normal = new Phaser.Math.Vector2(data.collision.normal)
-                        const velocity = new Phaser.Math.Vector2(this.body.velocity)
-                        const dot = normal.dot(velocity)
-                        const reflected = velocity.subtract(normal.scale(2 * dot))
-                        this.setVelocity(reflected.x, reflected.y)
-                        this.setAngle(Phaser.Math.RadToDeg(Math.atan2(this.body.velocity.y, this.body.velocity.x)) + 90)
-
-                        const spark = new Spark(this.scene, this.x, this.y)
-                        scene.add.existing(spark)
-
-                        scene.sound.play('ping', {
-                            volume: 0.25,
-                            detune: Phaser.Math.RND.realInRange(-200, 200),
-                        })
-                    }
-                    this.lastCollision = data.timeCreated
-                } else {
-                    if (this.scene) this.explode()
+                    if (this.active) this.explode()
+                } else if (!(data.bodyA.gameObject instanceof Wall) && !(data.bodyA.gameObject instanceof Pillar)) {
+                    if (this.active) this.explode()
                 }
             },
         )
@@ -79,14 +58,48 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
             volume: 3,
             detune: Phaser.Math.RND.realInRange(-100, 100),
         })
-        this.airSound.play()
+
+        scene.time.delayedCall(100, () => {
+            if (this.active)
+                this.airSound.play()
+        }, [], this)
     }
 
     preUpdate(time, delta) {
         this.trail.addPoint(this.x, this.y, 1000 / this.speed)
-        const dist = Phaser.Math.Clamp(this.distanceToNearestTank() / 300, 0, 0.8)
-        this.airSound.rate = Math.sqrt(1 - dist)
+        const dist = Phaser.Math.Clamp(this.distanceToNearestTank() / 300, 0, 0.9)
+        this.airSound.rate = Math.pow(1 - dist * 0.3, 0.5)
         this.airSound.volume = 3 * (1 - dist)
+
+        const tip = new Phaser.Math.Vector2(this.x, this.y)
+        tip.add(
+            new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).normalize().scale(this.height / 2),
+        )
+
+        const angle = Phaser.Math.Angle.Between(this.lastPosition.x, this.lastPosition.y, tip.x, tip.y)
+
+        const hit = this.scene.maze.raycaster.rayToward(this.lastPosition.x, this.lastPosition.y, angle)
+        if (hit) {
+            const hitPoint = new Phaser.Math.Vector2(hit.x, hit.y)
+            hitPoint.subtract(new Phaser.Math.Vector2(this.lastPosition.x, this.lastPosition.y))
+            const dist = hitPoint.length()
+            if (dist < this.height) {
+                const newVelocity = new Phaser.Math.Vector2(this.body.velocity)
+                newVelocity.setAngle(hit.reflectAngle)
+                this.setVelocity(newVelocity.x, newVelocity.y)
+                this.setRotation(hit.reflectAngle + Math.PI / 2)
+
+                const spark = new Spark(this.scene, this.x, this.y)
+                this.scene.add.existing(spark)
+
+                this.scene.sound.play('ping', {
+                    volume: 0.25,
+                    detune: Phaser.Math.RND.realInRange(-200, 200),
+                })
+            }
+        }
+        this.lastPosition.x = this.x
+        this.lastPosition.y = this.y
     }
 
     distanceToNearestTank() {

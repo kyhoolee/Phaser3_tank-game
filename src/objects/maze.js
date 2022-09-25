@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Raycaster from "phaser3-rex-plugins/plugins/math/raycaster/Raycaster"
 
 export class Wall extends Phaser.Physics.Matter.Image {
     // create sprite between two points
@@ -58,6 +59,14 @@ export default class Maze extends Phaser.GameObjects.Container {
         this.removeWalls(this.width * this.height / 5)
         this.createWallObjects()
         this.createPillarObjects()
+
+        this.raycaster = new Raycaster()
+        this.walls.forEach(wall => {
+            this.raycaster.addObstacle(wall)
+        })
+        this.pillars.forEach(pillar => {
+            this.raycaster.addObstacle(pillar)
+        })
     }
 
     getNeighbours(cell) {
