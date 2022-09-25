@@ -35,7 +35,7 @@ export default class Barrel extends Phaser.Physics.Matter.Image {
 
                     const spill = this.scene.add.sprite(this.x, this.y, 'atlas', 'oilSpill_large')
                     spill.setScale(Phaser.Math.RND.realInRange(0.7, 1) / this.scene.floorRenderTexture.scale)
-                    spill.setAlpha(Phaser.Math.RND.realInRange(0.5, 0.7))
+                    spill.setAlpha(Phaser.Math.RND.realInRange(0.4, 0.6))
                     spill.setAngle(Phaser.Math.RND.angle())
                     this.scene.floorRenderTexture.draw(
                         spill,
