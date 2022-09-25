@@ -32,6 +32,18 @@ export default class Barrel extends Phaser.Physics.Matter.Image {
                 if (this.scene) {
                     let explosion = new Explosion(this.scene, this.x, this.y, 1.8)
                     this.scene.add.existing(explosion)
+
+                    const spill = this.scene.add.sprite(this.x, this.y, 'atlas', 'oilSpill_large')
+                    spill.setScale(Phaser.Math.RND.realInRange(0.7, 1) / this.scene.floorRenderTexture.scale)
+                    spill.setAlpha(Phaser.Math.RND.realInRange(0.5, 0.7))
+                    spill.setAngle(Phaser.Math.RND.angle())
+                    this.scene.floorRenderTexture.draw(
+                        spill,
+                        this.x / this.scene.floorRenderTexture.scale,
+                        this.y / this.scene.floorRenderTexture.scale,
+                    )
+                    spill.destroy()
+
                     this.destroy()
                 }
             },

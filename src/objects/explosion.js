@@ -22,17 +22,27 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             }
         })
 
+        this.emitter = scene.add.particles('atlas', 'oilSpill_small').createEmitter({
+            x: x,
+            y: y,
+            speed: {min: -400, max: 400},
+            angle: {min: 0, max: 360},
+            scale: {start: 1 + scale * 0.5, end: 0},
+            lifespan: 200 * scale,
+        })
+        this.emitter.explode(20 * scale)
+
         scene.sound.play('explosion1', {
             volume: 0.3 + scale * 0.3,
             rate: Phaser.Math.RND.realInRange(1.9, 2.3) - scale * 0.5,
             detune: Phaser.Math.RND.realInRange(-100, 100) - scale * 500,
         })
 
-        scene.cameras.main.shake(100 * scale, 0.008 * ( 1 + scale * 0.3))
+        scene.cameras.main.shake(100 * scale, 0.008 * (1 + scale * 0.3))
 
         const crater = this.scene.add.sprite(this.x, this.y, 'atlas', 'crater')
         crater.setAlpha(0.075 * scale)
-        crater.setScale(scale)
+        crater.setScale(scale / this.scene.floorRenderTexture.scale)
         this.scene.floorRenderTexture.draw(
             crater,
             this.x / this.scene.floorRenderTexture.scale,
