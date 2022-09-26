@@ -43,7 +43,6 @@ export default class Barrel extends Phaser.Physics.Matter.Image {
                         this.y / this.scene.floorRenderTexture.scale,
                     )
                     spill.destroy()
-
                     this.destroy()
                 }
             },

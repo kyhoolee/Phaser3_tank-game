@@ -22,7 +22,7 @@ export default class Explosion extends Phaser.Physics.Matter.Sprite {
             }
         })
 
-        this.emitter = scene.add.particles('atlas', 'oilSpill_small').createEmitter({
+        this.emitter = this.scene.explosionParticles.createEmitter({
             x: x,
             y: y,
             speed: {min: -200, max: 200},

@@ -1,6 +1,7 @@
 import Shell from './weapons/shell'
 import StandardTurret from "./weapons/standardTurret"
 import FatTurret from "./weapons/fatTurret"
+import LaserTurret from "./weapons/laserTurret"
 
 export class TankBody extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, color = 'blue') {
@@ -18,9 +19,11 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.color = color
 
         this.tankBody = new TankBody(scene, 0, 0, color)
+        this.scene.add.existing(this.tankBody)
         this.add(this.tankBody)
 
-        this.tankTurret = new StandardTurret(scene, 0, 0, this, color, 'dark')
+        this.tankTurret = new LaserTurret(scene, 0, 0, this, color)
+        this.scene.add.existing(this.tankTurret)
         this.add(this.tankTurret)
 
         this.tracks = new Phaser.GameObjects.Sprite(scene, 0, 0, 'atlas', 'tracks')

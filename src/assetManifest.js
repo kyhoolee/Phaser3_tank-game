@@ -2,6 +2,9 @@ const AssetManifest = {
     sprites: [
         'atlas.png',
     ],
+    images: [
+        'star.png',
+    ],
     audio: [
         'engine1.mp3',
         'equip.mp3',
@@ -10,6 +13,7 @@ const AssetManifest = {
         'ping.mp3',
         'shot1.mp3',
         'shot2.mp3',
+        'laser1.mp3',
     ],
 }
 

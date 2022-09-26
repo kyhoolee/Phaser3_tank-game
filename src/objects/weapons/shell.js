@@ -86,7 +86,7 @@ export default class Shell extends Phaser.Physics.Matter.Sprite {
 
         const angle = Phaser.Math.Angle.Between(this.lastPosition.x, this.lastPosition.y, tip.x, tip.y)
 
-        const hit = this.scene.maze.raycaster.rayToward(this.lastPosition.x, this.lastPosition.y, angle)
+        const hit = this.scene.raycaster.rayToward(this.lastPosition.x, this.lastPosition.y, angle)
         if (hit) {
             const hitPoint = new Phaser.Math.Vector2(hit.x, hit.y)
             hitPoint.subtract(new Phaser.Math.Vector2(this.lastPosition.x, this.lastPosition.y))

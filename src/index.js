@@ -5,6 +5,7 @@ import Maze from './objects/maze'
 import Tank from './objects/tank'
 import Barrel from './objects/barrel'
 import Crate from './objects/crate'
+import Raycaster from "phaser3-rex-plugins/plugins/math/raycaster/Raycaster"
 
 class TankGame extends Phaser.Scene {
     constructor(config) {
@@ -58,7 +59,6 @@ class TankGame extends Phaser.Scene {
             this.add.existing(this.maze)
 
             this.tanks = []
-
             const spawnTank = (color = 'blue', inputKeys) => {
                 const tankSpawn = {
                     x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
@@ -71,6 +71,7 @@ class TankGame extends Phaser.Scene {
                 this.tanks.push(tank)
             }
 
+            this.barrels = []
             const spawnBarrel = () => {
                 const barrelSpawn = {
                     x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5
@@ -82,8 +83,10 @@ class TankGame extends Phaser.Scene {
                 const barrel = new Barrel(this, barrelSpawn.x, barrelSpawn.y)
                 barrel.setAngle(Phaser.Math.RND.angle())
                 this.add.existing(barrel)
+                this.barrels.push(barrel)
             }
 
+            this.crates = []
             const spawnCrate = () => {
                 const crateSpawn = {
                     x: Phaser.Math.RND.between(0, mazeSize.x - 1) * tileSize.x + tileSize.x * 0.5,
@@ -92,15 +95,16 @@ class TankGame extends Phaser.Scene {
 
                 const crate = new Crate(this, crateSpawn.x, crateSpawn.y)
                 this.add.existing(crate)
+                this.crates.push(crate)
             }
 
-            spawnTank('red', {
-                up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-                left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-                down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-                right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-                fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
-            })
+            // spawnTank('red', {
+            //     up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+            //     left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+            //     down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+            //     right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+            //     fire: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            // })
             spawnTank('blue', {
                 up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
                 left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
@@ -117,6 +121,23 @@ class TankGame extends Phaser.Scene {
                 spawnCrate()
             }
 
+            this.raycaster = new Raycaster()
+            this.maze.walls.forEach(wall => {
+                this.raycaster.addObstacle(wall)
+            })
+            this.maze.pillars.forEach(pillar => {
+                this.raycaster.addObstacle(pillar)
+            })
+            this.tanks.forEach(tank => {
+                this.raycaster.addObstacle(tank)
+            })
+            this.barrels.forEach(barrel => {
+                this.raycaster.addObstacle(barrel)
+            })
+            this.crates.forEach(crate => {
+                this.raycaster.addObstacle(crate)
+            })
+
             const floorDecal = this.add.rectangle(0, 0, 20, 20, 0x000000, 0.1)
             for (let i = 0; i < mazeSize.x * mazeSize.y * 3; i++) {
                 floorDecal.setPosition(Phaser.Math.RND.realInRange(0, mazeSize.x * tileSize.x), Phaser.Math.RND.realInRange(0, mazeSize.y * tileSize.y))
@@ -127,11 +148,14 @@ class TankGame extends Phaser.Scene {
             }
             floorDecal.destroy()
 
+            this.explosionParticles = this.add.particles('atlas', 'oilSpill_small')
+            this.laserParticles = this.add.particles('star')
+
             this.input.keyboard.addKey('r').on('down', () => {
                 this.input.keyboard.removeAllKeys()
                 this.sound.stopAll()
                 this.tweens.killAll()
-                this.maze.raycaster.clearObstacle()
+                this.raycaster.clearObstacle()
                 this.scene.restart()
             })
 
@@ -148,14 +172,25 @@ class TankGame extends Phaser.Scene {
                     500,
                 )
             })
+            this.loaded = true
         })
     }
 
     update(time, delta) {
-        if (this.debug)
+        if (this.loaded) {
             this.debug.setText([
                 'FPS: ' + this.game.loop.actualFps.toFixed(2),
             ])
+            this.tanks.forEach(tank => {
+                this.raycaster.updateObstacle(tank)
+            })
+            this.barrels.forEach(barrel => {
+                this.raycaster.updateObstacle(barrel)
+            })
+            this.crates.forEach(crate => {
+                this.raycaster.updateObstacle(crate)
+            })
+        }
     }
 
     fitCameraToRect(rect, margin = 0, duration = 0) {
