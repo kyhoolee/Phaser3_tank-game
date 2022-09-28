@@ -53,7 +53,7 @@ export default class LaserTurret extends Phaser.GameObjects.Container {
                 }
             },
             onComplete: () => {
-                fireLaser.destroy()
+                this.scene.time.delayedCall(50, () => fireLaser.destroy())
                 const emitter = this.scene.laserParticles.createEmitter(
                     {
                         emitZone: {type: 'random', source: laserPath},
@@ -65,7 +65,7 @@ export default class LaserTurret extends Phaser.GameObjects.Container {
                         tint: 0xff0000,
                         delay: 0,
                     })
-                emitter.explode(50)
+                emitter.explode(fireLaser.rayLength / 20)
                 this.firing = false
             },
         })
